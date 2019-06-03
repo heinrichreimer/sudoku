@@ -64,3 +64,13 @@ dependencies {
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
 }
+
+val copyDebugApk by tasks.registering(Copy::class) {
+    val apkDir = buildDir.resolve("outputs/apk")
+    from(apkDir.resolve("debug/app-debug.apk"))
+    into(apkDir)
+}
+
+tasks.named("build") {
+    dependsOn(copyDebugApk)
+}

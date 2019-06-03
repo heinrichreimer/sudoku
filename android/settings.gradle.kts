@@ -2,20 +2,21 @@ import java.util.*
 
 include(":app", ":framework")
 
+// Load and include Flutter plugins.
 val flutterProjectRoot: File = rootProject.projectDir.parentFile
-
-val plugins = Properties()
-val pluginsFile = flutterProjectRoot.resolve(".flutter-plugins")
-if (pluginsFile.exists()) {
-    pluginsFile.reader(Charsets.UTF_8).use { reader -> plugins.load(reader) }
-}
-
-plugins.forEach { name, path ->
-    val pluginDirectory = flutterProjectRoot.resolve(path.toString()).resolve("android")
-    include(":$name")
-    project(":$name").projectDir = pluginDirectory
-}
-
+Properties()
+        .apply {
+            flutterProjectRoot
+                    .resolve(".flutter-plugins")
+                    .takeIf(File::exists)
+                    ?.reader(Charsets.UTF_8)
+                    ?.use(::load)
+        }
+        .forEach { name, path ->
+            include(":$name")
+            val pluginDirectory = flutterProjectRoot.resolve(path.toString()).resolve("android")
+            project(":$name").projectDir = pluginDirectory
+        }
 
 pluginManagement {
     /**
@@ -27,7 +28,7 @@ pluginManagement {
     }
     resolutionStrategy {
         eachPlugin {
-            val module = when(requested.id.id) {
+            val module = when (requested.id.id) {
                 "com.android.application" -> "com.android.tools.build:gradle:${requested.version}"
                 else -> null
             }

@@ -1,8 +1,7 @@
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
-
-import 'sudoku.dart';
+import 'package:sudoku/sudoku/sudoku.dart';
 
 @immutable
 abstract class Change {

@@ -48,7 +48,7 @@ class Session implements Progress {
 
   Sudoku get sudoku {
     // Take initial sudoku and apply all changes.
-    throw UnsupportedError("Not implemented.");
+    throw UnimplementedError();
   }
 
   @override

@@ -13,9 +13,23 @@ abstract class Progress {
 
 @immutable
 class Sudoku implements Progress {
-  final List<Cell> cells;
+  final List<Cell> cells = List.generate(9 * 9, (i) {
+    return Cell(
+        Position(i % 9, i ~/ 9), null
+    );
+  });
 
-  Sudoku(this.cells);
+  Sudoku.cells(Set<Cell> cells) {
+    for (Cell cell in cells) {
+      this.cells[cell.position.y + 9 * cell.position.x] = cell;
+    }
+  }
+
+  Sudoku.map(Map<Position, Digit> cells) {
+    for (var entry in cells.entries) {
+      this.cells[entry.key.y + 9 * entry.key.x] = Cell(entry.key, entry.value);
+    }
+  }
 
   Cell getCell(int x, int y) {
     return cells[y + 9 * x];
@@ -32,7 +46,7 @@ class Sudoku implements Progress {
   Block getBlock(int x, int y) => Block(this, x, y);
 
   Iterable<Block> get _blocks =>
-      Iterable.generate(9, (i) => getBlock(i ~/ 3, i % 3));
+      Iterable.generate(9, (i) => getBlock(i % 3, i ~/ 3));
 
   @override
   bool get isComplete => !cells.any((cell) => cell.digit == null);

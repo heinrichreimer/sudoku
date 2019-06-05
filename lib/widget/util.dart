@@ -27,7 +27,7 @@ class SquareGrid extends StatelessWidget {
       if (position + 1 == size) {
         return BorderSide.none;
       } else {
-        return divider;
+        return divider ?? BorderSide.none;
       }
     }
 

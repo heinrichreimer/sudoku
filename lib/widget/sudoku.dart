@@ -28,8 +28,43 @@ class Cell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Square(
-      child: Center(
-        child: Text("($_row,$_column)\n${_digit?.toString() ?? "❌"}"),
+      child: Stack(
+        children: <Widget>[
+          Center(
+            child: Text(
+              "($_row,$_column)",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption
+                  .apply(fontSizeDelta: 4),
+            ),
+          ),
+          Center(
+            child: Text(
+              _digit?.toString() ?? "⨯",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .subtitle,
+            ),
+          ),
+          SquareGrid(
+            size: 3,
+            generator: (row, column) {
+              var digit = model.Digit.values[3 * row + column];
+              return Center(
+                child: Text(
+                  cell.notes.contains(digit) ? "•" : "⨯",
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -55,7 +90,7 @@ class Block extends StatelessWidget {
       },
       divider: BorderSide(
         color: Colors.amberAccent /*Theme.of(context).dividerColor*/,
-        width: 1,
+        width: 1.5,
       ),
     );
   }
@@ -81,7 +116,7 @@ class Sudoku extends StatelessWidget {
       },
       divider: BorderSide(
         color: Colors.redAccent /*Theme.of(context).dividerColor*/,
-        width: 2,
+        width: 2.5,
       ),
     );
   }

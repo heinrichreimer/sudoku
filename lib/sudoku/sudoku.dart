@@ -109,6 +109,14 @@ abstract class Cell {
   Digit digit;
 
   Set<Digit> get notes;
+
+  Row get row;
+
+  Column get column;
+
+  Block get block;
+
+  Iterable<Group> get groups;
 }
 
 @immutable
@@ -129,6 +137,23 @@ class _Cell implements Cell {
   @override
   Set<Digit> get notes =>
       _sudoku._notes[_Sudoku._getIndexForPosition(position)];
+
+  @override
+  Row get row => _Row(_sudoku, position.y);
+
+  @override
+  Column get column => _Column(_sudoku, position.x);
+
+  @override
+  Block get block =>
+      _Block(
+        _sudoku,
+        position.x % Block.DIVISIONS,
+        position.y % Block.DIVISIONS,
+      );
+
+  @override
+  Iterable<Group> get groups => [row, column, block];
 }
 
 @immutable

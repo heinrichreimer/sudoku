@@ -61,8 +61,9 @@ class Sudoku implements Progress {
 class Cell {
   final Position position;
   final Digit digit;
+  final Set<Digit> notes = Set();
 
-  const Cell(this.position, this.digit);
+  Cell(this.position, this.digit);
 }
 
 @immutable

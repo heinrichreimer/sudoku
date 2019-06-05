@@ -45,12 +45,18 @@ class _Sudoku implements Sudoku {
   @override
   final List<Digit> _digits = List.filled(CELL_COUNT, null);
   @override
-  final List<Set<Digit>> _notes = List.filled(CELL_COUNT, Set());
+  final List<Set<Digit>> _notes = List.unmodifiable(
+    List.filled(CELL_COUNT, Set()),
+  );
+
+  _Sudoku();
 
   _Sudoku.cells(Set<Cell> cells) {
     for (Cell cell in cells) {
       this._digits[_getIndexForPosition(cell.position)] = cell.digit;
-      this._notes[_getIndexForPosition(cell.position)] = cell.notes;
+      this._notes[_getIndexForPosition(cell.position)]
+        ..clear()
+        ..addAll(cell.notes);
     }
   }
 

@@ -17,6 +17,8 @@ abstract class Sudoku implements Progress {
 
   List<Set<Digit>> get _notes;
 
+  factory Sudoku() => _Sudoku();
+
   factory Sudoku.cells(Set<Cell> cells) => _Sudoku.cells(cells);
 
   factory Sudoku.map(Map<Position, Digit> cells) => _Sudoku.map(cells);
@@ -200,7 +202,6 @@ abstract class Block extends Group {
 
 @immutable
 class _Block with Group implements Block {
-
   final Sudoku _sudoku;
   @override
   final int x;

@@ -59,20 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  var sudoku = model.Sudoku.map({
-    model.Position(3, 5): model.Digit.FIVE,
-    model.Position(1, 6): model.Digit.NINE,
-    model.Position(2, 5): model.Digit.THREE,
-    model.Position(3, 1): model.Digit.SEVEN,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Sudoku(sudoku: sudoku),
+      body: SudokuBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -81,3 +74,28 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+@immutable
+class SudokuBody extends StatelessWidget {
+  final sudoku = model.Sudoku.map({
+    model.Position(3, 5): model.Digit.FIVE,
+    model.Position(1, 6): model.Digit.NINE,
+    model.Position(2, 5): model.Digit.THREE,
+    model.Position(3, 1): model.Digit.SEVEN,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Sudoku(
+      sudoku: sudoku,
+      onCellTap: (row, column) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Tapped cell (${column + 1}, ${row + 1})"),
+          ),
+        );
+      },
+    );
+  }
+}
+

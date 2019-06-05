@@ -33,7 +33,8 @@ class Cell extends StatelessWidget {
           Center(
             child: Text(
               "($_row,$_column)",
-              style: Theme
+              style:
+              Theme
                   .of(context)
                   .textTheme
                   .caption
@@ -73,10 +74,12 @@ class Cell extends StatelessWidget {
 @immutable
 class Block extends StatelessWidget {
   final model.Block block;
+  final void Function(int row, int column) onCellTap;
 
   const Block({
     Key key,
     @required this.block,
+    this.onCellTap,
   }) : super(key: key);
 
   @override
@@ -84,8 +87,11 @@ class Block extends StatelessWidget {
     return SquareGrid(
       size: 3,
       generator: (row, column) {
-        return Cell(
-          cell: block.getCell(row, column),
+        return InkWell(
+          child: Cell(
+            cell: block.getCell(row, column),
+          ),
+          onTap: () => onCellTap(3 * block.y + row, 3 * block.x + column),
         );
       },
       divider: BorderSide(
@@ -99,10 +105,12 @@ class Block extends StatelessWidget {
 @immutable
 class Sudoku extends StatelessWidget {
   final model.Sudoku sudoku;
+  final void Function(int row, int column) onCellTap;
 
   const Sudoku({
     Key key,
     @required this.sudoku,
+    this.onCellTap,
   }) : super(key: key);
 
   @override
@@ -112,6 +120,7 @@ class Sudoku extends StatelessWidget {
       generator: (row, column) {
         return Block(
           block: sudoku.getBlock(row, column),
+          onCellTap: onCellTap,
         );
       },
       divider: BorderSide(

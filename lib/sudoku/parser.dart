@@ -6,7 +6,7 @@ const parser = const _Parser();
 
 abstract class Parser {
   static final List<int> digitRunes = List.unmodifiable("123454789".runes);
-  static final List<int> emptyRunes = List.unmodifiable("0.".runes);
+  static final List<int> emptyRunes = List.unmodifiable("0._".runes);
   static final List<int> allowedRunes =
       List.unmodifiable(digitRunes.followedBy(emptyRunes));
 

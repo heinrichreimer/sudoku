@@ -12,9 +12,9 @@ class Cell extends StatelessWidget {
     @required this.cell,
   }) : super(key: key);
 
-  int get _row => cell.position.x + 1;
+  int get _row => cell.position.row + 1;
 
-  int get _column => cell.position.y + 1;
+  int get _column => cell.position.column + 1;
 
   int get _digit {
     var digit = cell.digit;
@@ -89,9 +89,10 @@ class Block extends StatelessWidget {
       generator: (row, column) {
         return InkWell(
           child: Cell(
-            cell: block.getCell(row, column),
+            cell: block.getCell(row: row, column: column),
           ),
-          onTap: () => onCellTap(3 * block.y + row, 3 * block.x + column),
+          onTap: () =>
+              onCellTap(3 * block.row + row, 3 * block.column + column),
         );
       },
       divider: BorderSide(
@@ -119,7 +120,7 @@ class Sudoku extends StatelessWidget {
       size: 3,
       generator: (row, column) {
         return Block(
-          block: sudoku.getBlock(row, column),
+          block: sudoku.getBlock(row: row, column: column),
           onCellTap: onCellTap,
         );
       },

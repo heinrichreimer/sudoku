@@ -26,13 +26,23 @@ abstract class Sudoku implements Progress {
 
   factory Sudoku.parse(String grid) => parser.parse(grid);
 
-  Cell getCell(int x, int y);
+  Cell getCell({
+    @required int row,
+    @required int column,
+  });
 
-  Row getRow(int y);
+  Row getRow({
+    @required int row,
+  });
 
-  Column getColumn(int x);
+  Column getColumn({
+    @required int column,
+  });
 
-  Block getBlock(int x, int y);
+  Block getBlock({
+    @required int row,
+    @required int column,
+  });
 }
 
 @immutable
@@ -40,13 +50,19 @@ class _Sudoku implements Sudoku {
   static const int SIZE = 9;
   static const int CELL_COUNT = SIZE * SIZE;
 
-  static int _getIndex(int row, int column) => row * SIZE + column;
+  static int _getIndex({
+    @required int row,
+    @required int column,
+  }) {
+    return row * SIZE + column;
+  }
 
   static int _getIndexForPosition(Position position) =>
-      _getIndex(position.y, position.x);
+      _getIndex(row: position.row, column: position.column);
 
   @override
   final List<Digit> _digits = List.filled(CELL_COUNT, null);
+
   @override
   final List<Set<Digit>> _notes = List.unmodifiable(
     List.filled(CELL_COUNT, Set<Digit>()),
@@ -70,23 +86,63 @@ class _Sudoku implements Sudoku {
   }
 
   @override
-  Cell getCell(int x, int y) => _Cell(this, Position(x, y));
+  Cell getCell({
+    @required int row,
+    @required int column,
+  }) {
+    return _Cell(
+      this,
+      Position(
+        row: row,
+        column: column,
+      ),
+    );
+  }
 
   @override
-  Row getRow(int y) => _Row(this, y);
+  Row getRow({
+    @required int row,
+  }) {
+    return _Row(
+      this,
+      row: row,
+    );
+  }
 
-  Iterable<Row> get _rows => Iterable.generate(9, (i) => getRow(i));
+  Iterable<Row> get _rows =>
+      Iterable.generate(9, (column) => getRow(row: column));
 
   @override
-  Column getColumn(int x) => _Column(this, x);
+  Column getColumn({
+    @required int column,
+  }) {
+    return _Column(
+      this,
+      column: column,
+    );
+  }
 
-  Iterable<Column> get _columns => Iterable.generate(9, (i) => getColumn(i));
+  Iterable<Column> get _columns =>
+      Iterable.generate(9, (row) => getColumn(column: row));
 
   @override
-  Block getBlock(int x, int y) => _Block(this, x, y);
+  Block getBlock({
+    @required int row,
+    @required int column,
+  }) {
+    return _Block(
+      this,
+      row: row,
+      column: column,
+    );
+  }
 
-  Iterable<Block> get _blocks =>
-      Iterable.generate(9, (i) => getBlock(i % 3, i ~/ 3));
+  Iterable<Block> get _blocks {
+    return Iterable.generate(
+      9,
+          (position) => getBlock(row: position % 3, column: position ~/ 3),
+    );
+  }
 
   @override
   bool get isComplete {
@@ -139,18 +195,29 @@ class _Cell implements Cell {
       _sudoku._notes[_Sudoku._getIndexForPosition(position)];
 
   @override
-  Row get row => _Row(_sudoku, position.y);
+  Row get row {
+    return _Row(
+      _sudoku,
+      row: position.row,
+    );
+  }
 
   @override
-  Column get column => _Column(_sudoku, position.x);
+  Column get column {
+    return _Column(
+      _sudoku,
+      column: position.column,
+    );
+  }
 
   @override
-  Block get block =>
-      _Block(
-        _sudoku,
-        position.x % Block.DIVISIONS,
-        position.y % Block.DIVISIONS,
-      );
+  Block get block {
+    return _Block(
+      _sudoku,
+      row: position.row % Block.DIVISIONS,
+      column: position.column % Block.DIVISIONS,
+    );
+  }
 
   @override
   Iterable<Group> get groups => [row, column, block];
@@ -158,10 +225,13 @@ class _Cell implements Cell {
 
 @immutable
 class Position {
-  final int x;
-  final int y;
+  final int row;
+  final int column;
 
-  const Position(this.x, this.y);
+  const Position({
+    @required this.row,
+    @required this.column,
+  });
 }
 
 @immutable
@@ -181,49 +251,61 @@ abstract class Group implements Progress {
 abstract class Row extends Group {
   static const int WIDTH = Sudoku.SIZE;
 
-  int get y;
+  int get row;
 
-  Cell getCell(int x);
+  Cell getCell({
+    @required int column,
+  });
 }
 
 @immutable
 class _Row with Group implements Row {
   final Sudoku _sudoku;
   @override
-  final int y;
+  final int row;
 
-  _Row(this._sudoku, this.y);
+  _Row(this._sudoku, {this.row});
 
   @override
-  Cell getCell(int x) => _sudoku.getCell(x, y);
+  Cell getCell({
+    @required int column,
+  }) {
+    return _sudoku.getCell(row: row, column: column);
+  }
 
   @override
   Iterable<Digit> get digits =>
-      Iterable.generate(Row.WIDTH, (x) => getCell(x).digit);
+      Iterable.generate(Row.WIDTH, (column) => getCell(column: column).digit);
 }
 
 abstract class Column extends Group {
   static const int HEIGHT = Sudoku.SIZE;
 
-  int get x;
+  int get column;
 
-  Cell getCell(int y);
+  Cell getCell({
+    @required int row,
+  });
 }
 
 @immutable
 class _Column with Group implements Column {
   final Sudoku _sudoku;
   @override
-  final int x;
+  final int column;
 
-  _Column(this._sudoku, this.x);
+  _Column(this._sudoku, {this.column});
 
   @override
-  Cell getCell(int y) => _sudoku.getCell(x, y);
+  Cell getCell({
+    @required int row,
+  }) {
+    return _sudoku.getCell(row: row, column: column);
+  }
 
   @override
   Iterable<Digit> get digits =>
-      Iterable.generate(Column.HEIGHT, (y) => getCell(y).digit);
+      Iterable.generate(Column.HEIGHT, (row) => getCell(row: row).digit);
 }
 
 abstract class Block extends Group {
@@ -231,32 +313,44 @@ abstract class Block extends Group {
   static const int SIZE = Sudoku.SIZE ~/ DIVISIONS;
   static const int CELL_COUNT = SIZE * SIZE;
 
-  int get x;
+  int get column;
 
-  int get y;
+  int get row;
 
-  Cell getCell(int x, int y);
+  Cell getCell({
+    @required int row,
+    @required int column,
+  });
 }
 
 @immutable
 class _Block with Group implements Block {
   final Sudoku _sudoku;
   @override
-  final int x;
+  final int row;
   @override
-  final int y;
+  final int column;
 
-  _Block(this._sudoku, this.x, this.y);
-
-  @override
-  Cell getCell(int x, int y) =>
-      _sudoku.getCell(Block.SIZE * x + x, Block.SIZE * y + y);
+  _Block(this._sudoku, {this.row, this.column});
 
   @override
-  Iterable<Digit> get digits =>
-      Iterable.generate(Block.CELL_COUNT, (index) {
-        int x = index % Block.DIVISIONS;
-        int y = index ~/ Block.DIVISIONS;
-        return getCell(x, y).digit;
-      });
+  Cell getCell({
+    @required int row,
+    @required int column,
+  }) {
+    return _sudoku.getCell(
+      row: Block.SIZE * this.row + row,
+      column: Block.SIZE * this.column + column,
+    );
+  }
+
+  @override
+  Iterable<Digit> get digits {
+    return Iterable.generate(Block.CELL_COUNT, (position) {
+      return getCell(
+        row: position % Block.DIVISIONS,
+        column: position ~/ Block.DIVISIONS,
+      ).digit;
+    });
+  }
 }

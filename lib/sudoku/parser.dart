@@ -52,7 +52,9 @@ class _Parser implements Parser {
       for (int column = 0; column < Sudoku.SIZE; column++) {
         int rune = filteredGrid[row * Sudoku.SIZE + column];
         Digit digit = dict[rune];
-        sudoku.getCell(column, row).digit = digit;
+        sudoku
+            .getCell(column: column, row: row)
+            .digit = digit;
       }
     }
 

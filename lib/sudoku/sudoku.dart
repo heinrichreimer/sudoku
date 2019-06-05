@@ -49,7 +49,7 @@ class _Sudoku implements Sudoku {
   final List<Digit> _digits = List.filled(CELL_COUNT, null);
   @override
   final List<Set<Digit>> _notes = List.unmodifiable(
-    List.filled(CELL_COUNT, Set()),
+    List.filled(CELL_COUNT, Set<Digit>()),
   );
 
   _Sudoku();

@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:sudoku/sudoku/parser.dart';
 import 'package:sudoku/util.dart';
 
 enum Digit { ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE }
@@ -22,6 +23,8 @@ abstract class Sudoku implements Progress {
   factory Sudoku.cells(Set<Cell> cells) => _Sudoku.cells(cells);
 
   factory Sudoku.map(Map<Position, Digit> cells) => _Sudoku.map(cells);
+
+  factory Sudoku.parse(String grid) => parser.parse(grid);
 
   Cell getCell(int x, int y);
 

@@ -97,7 +97,7 @@ class _Sudoku implements Sudoku {
 abstract class Cell {
   Position get position;
 
-  Digit get digit;
+  Digit digit;
 
   Set<Digit> get notes;
 }
@@ -112,6 +112,10 @@ class _Cell implements Cell {
 
   @override
   Digit get digit => _sudoku._digits[_Sudoku._getIndexForPosition(position)];
+
+  @override
+  set digit(Digit _digit) =>
+      _sudoku._digits[_Sudoku._getIndexForPosition(position)] = _digit;
 
   @override
   Set<Digit> get notes =>
